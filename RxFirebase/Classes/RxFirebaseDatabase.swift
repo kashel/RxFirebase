@@ -19,11 +19,11 @@ public extension FIRDatabaseQuery {
     */
     func rx_observe(eventType: FIRDataEventType) -> Observable<FIRDataSnapshot> {
         return Observable.create { observer in
-            let handle = self.observeEventType(eventType) { (snapshot) in
+            let handle = self.observe(eventType) { (snapshot) in
                 observer.onNext(snapshot)
             }
-            return AnonymousDisposable {
-                self.removeObserverWithHandle(handle)
+            return Disposables.create {
+                self.removeObserver(withHandle: handle)
             }
         }
     }
@@ -38,11 +38,11 @@ public extension FIRDatabaseQuery {
     */
     func rx_observeWithSiblingKey(eventType: FIRDataEventType) -> Observable<(FIRDataSnapshot, String?)> {
         return Observable.create { observer in
-            let handle = self.observeEventType(eventType, andPreviousSiblingKeyWithBlock: { (snapshot, siblingKey) in
+            let handle = self.observe(eventType, andPreviousSiblingKeyWith: { (snapshot, siblingKey) in
                 observer.onNext((snapshot, siblingKey))
             })
-            return AnonymousDisposable {
-                self.removeObserverWithHandle(handle)
+            return Disposables.create {
+                self.removeObserver(withHandle: handle)
             }
         }
     }
@@ -54,28 +54,28 @@ public extension FIRDatabaseQuery {
     */
     func rx_observeSingleEventOfType(eventType: FIRDataEventType) -> Observable<FIRDataSnapshot> {
         return Observable.create { observer in
-            self.observeSingleEventOfType(eventType, withBlock: { (snapshot) in
+            self.observeSingleEvent(of: eventType, with: { (snapshot) in
                 observer.onNext(snapshot)
                 observer.onCompleted()
             })
             
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
     /**
-     This is equivalent to rx_observeWithSiblingKey(), except the observer is immediately 
+     This is equivalent to rx_observeWithSiblingKey(), except the observer is immediately
      canceled after the initial data is returned.
      
      @param eventType The type of event to listen for.
     */
     func rx_observeSingleEventOfTypeWithSiblingKey(eventType: FIRDataEventType) -> Observable<(FIRDataSnapshot, String?)> {
         return Observable.create { observer in
-            self.observeSingleEventOfType(eventType, andPreviousSiblingKeyWithBlock: { (snapshot, string) in
+            self.observeSingleEvent(of: eventType, andPreviousSiblingKeyWith: { (snapshot, string) in
                 observer.onNext((snapshot, string))
                 observer.onCompleted()
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
 }
@@ -99,7 +99,7 @@ public extension FIRDatabaseReference {
                 }
             })
             
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
@@ -138,7 +138,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
@@ -151,7 +151,7 @@ public extension FIRDatabaseReference {
     */
     func rx_removeValue() -> Observable<FIRDatabaseReference> {
         return Observable.create { observer in
-            self.removeValueWithCompletionBlock({ (error, databaseReference) in
+            self.removeValue(completionBlock: { (error, databaseReference) in
                 if let error = error {
                     observer.onError(error)
                 } else {
@@ -159,7 +159,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     /**
@@ -173,7 +173,7 @@ public extension FIRDatabaseReference {
      
      @param block This block receives the current data at this location and must return an instance of FIRTransactionResult
     */
-    func rx_runTransactionBlock(block: ((FIRMutableData!) -> FIRTransactionResult)!) -> Observable<(isCommitted: Bool, snapshot: FIRDataSnapshot?)> {
+    func rx_runTransactionBlock(block: ((FIRMutableData) -> FIRTransactionResult)!) -> Observable<(isCommitted: Bool, snapshot: FIRDataSnapshot?)> {
         return Observable.create { observer in
             self.runTransactionBlock(block, andCompletionBlock: { (error, isCommitted, snapshot) in
                 if let error = error {
@@ -183,7 +183,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
@@ -220,7 +220,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
@@ -246,7 +246,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     
@@ -267,7 +267,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
     /**
@@ -279,7 +279,7 @@ public extension FIRDatabaseReference {
     */
     func rx_onDisconnectRemoveValue() -> Observable<FIRDatabaseReference> {
         return Observable.create { observer in
-            self.onDisconnectRemoveValueWithCompletionBlock({ (error, databaseReference) in
+            self.onDisconnectRemoveValue(completionBlock: { (error, databaseReference) in
                 if let error = error {
                     observer.onError(error)
                 } else {
@@ -287,7 +287,7 @@ public extension FIRDatabaseReference {
                     observer.onCompleted()
                 }
             })
-            return NopDisposable.instance
+            return Disposables.create();
         }
     }
 }
@@ -318,7 +318,7 @@ public extension ObservableType where E : FIRDataSnapshot {
                 }
                 observer.onCompleted()
                 
-                return NopDisposable.instance
+                return Disposables.create();
             }
         })
     }
@@ -331,7 +331,7 @@ public extension ObservableType where E : FIRDataSnapshot {
                 }
                 observer.onCompleted()
                 
-                return NopDisposable.instance
+                return Disposables.create();
             }
         })
     }
