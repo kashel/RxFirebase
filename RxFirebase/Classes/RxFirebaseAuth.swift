@@ -35,7 +35,7 @@ public extension FIRAuth {
      @param email The user's email address.
      @param password The user's password.
     */
-    func rx_signinWithEmail(email: String, password: String) -> Observable<FIRUser?> {
+    func rx_signin(email: String, password: String) -> Observable<FIRUser?> {
         return Observable.create { observer in
             
             self.signIn(withEmail: email, password: password, completion: { (user, error) in
@@ -112,7 +112,7 @@ public extension FIRAuth {
      @param email The user's email address.
      @param password The user's desired password
     */
-    func rx_createUserWithEmail(email: String, password: String) -> Observable<FIRUser?> {
+    func rx_createUser(email: String, password: String) -> Observable<FIRUser?> {
         return Observable.create { observer in
             self.createUser(withEmail: email, password: password, completion: { (user, error) in
                 if let error = error {
@@ -123,8 +123,23 @@ public extension FIRAuth {
                 }
             })
             
-            return Disposables.create();
+            return Disposables.create()
         }
     }
     
+    /**
+     Sign out
+    */
+    func rx_signOut() -> Observable<Bool> {
+        return Observable.create{ observer in
+            do {
+                try self.signOut()
+                observer.onNext(true)
+                observer.onCompleted()
+            } catch let error {
+                observer.onError(error)
+            }
+            return Disposables.create()
+        }
+    }
 }
