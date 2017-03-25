@@ -35,14 +35,16 @@ public extension FIRAuth {
      @param email The user's email address.
      @param password The user's password.
     */
-    func rx_signin(email: String, password: String) -> Observable<FIRUser?> {
+    func rx_signin(email: String, password: String) -> Observable<FIRUser> {
         return Observable.create { observer in
             
             self.signIn(withEmail: email, password: password, completion: { (user, error) in
                 if let error = error {
                     observer.onError(error)
+                } else if user == nil {
+                    observer.onError(NSError(domain: FIRAuthErrorDomain, code: FIRAuthErrorCode.errorCodeInternalError.rawValue, userInfo: [NSLocalizedDescriptionKey: "no user returned in authentication request"]))
                 } else {
-                    observer.onNext(user)
+                    observer.onNext(user!)
                     observer.onCompleted()
                 }
             })
@@ -112,13 +114,15 @@ public extension FIRAuth {
      @param email The user's email address.
      @param password The user's desired password
     */
-    func rx_createUser(email: String, password: String) -> Observable<FIRUser?> {
+    func rx_createUser(email: String, password: String) -> Observable<FIRUser> {
         return Observable.create { observer in
             self.createUser(withEmail: email, password: password, completion: { (user, error) in
                 if let error = error {
                     observer.onError(error)
+                } else if user == nil {
+                    observer.onError(NSError(domain: FIRAuthErrorDomain, code: FIRAuthErrorCode.errorCodeInternalError.rawValue, userInfo: [NSLocalizedDescriptionKey: "no user returned"]))
                 } else {
-                    observer.onNext(user)
+                    observer.onNext(user!)
                     observer.onCompleted()
                 }
             })
