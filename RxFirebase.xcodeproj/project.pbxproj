@@ -94,7 +94,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3F2929521EFC3E6D001F3B92 = {
+		3F17BCF71F06C1C900CD6B85 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
 				3F3FBFCC1F000C0A00F7E26E /* FirebaseInstanceID.framework */,
@@ -106,6 +106,14 @@
 				3F3FBFC81F000AA100F7E26E /* FirebaseDatabase.framework */,
 				3F3FBFC61F000A8F00F7E26E /* FirebaseAuth.framework */,
 				3F3FBFC41EFD5BCE00F7E26E /* RxSwift.framework */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		3F2929521EFC3E6D001F3B92 = {
+			isa = PBXGroup;
+			children = (
+				3F17BCF71F06C1C900CD6B85 /* Dependencies */,
 				3F29295E1EFC3E6D001F3B92 /* RxFirebase */,
 				3F2929691EFC3E6D001F3B92 /* RxFirebaseTests */,
 				3F29295D1EFC3E6D001F3B92 /* Products */,
